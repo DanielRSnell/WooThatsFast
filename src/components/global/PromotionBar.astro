@@ -1,0 +1,37 @@
+---
+import Text from "../fundations/elements/Text.astro";
+
+const { post } = Astro.props;
+---
+
+<div class="relative bg-black text-white dark:bg-white dark:text-black">
+  <div class="mx-auto max-w-7xl py-3 px-3 sm:px-6 lg:px-8">
+    <div class="pr-16 sm:px-16 sm:text-center">
+      <div class="flex items-center justify-center gap-2">
+        <span class="hidden sm:inline font-medium">New Post:</span>
+        <Text
+          tag="a"
+          href={`/blog/${post.slug}`}
+          variant="textSM"
+          class="font-medium hover:opacity-80 duration-200 flex items-center gap-1"
+        >
+          {post.data.title}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="w-4 h-4"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+            />
+          </svg>
+        </Text>
+      </div>
+    </div>
+  </div>
+</div>

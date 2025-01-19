@@ -1,0 +1,157 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Shadow from "@/components/global/Shadow.astro";
+import Footer from "@/components/global/Footer.astro";
+import Navigation from "@/components/global/Navigation.astro";
+import { getEntry } from 'astro:content';
+
+const devContent = await getEntry('pages', 'development');
+const { features, services, process } = devContent.data;
+---
+
+<BaseLayout>
+  <section class="relative overflow-hidden">
+    <Shadow />
+    <div class="p-8 lg:px-44 lg:py-24 2xl:px-24 relative">
+      <Navigation />
+      
+      <div class="flex flex-col gap-12">
+        <div class="border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
+          <div class="flex items-center gap-2 text-black dark:text-white">
+            <div class="size-2 rounded-lg bg-green-500 animate-pulse"></div>
+            <Text
+              tag="p"
+              variant="textSM"
+              class="text-black dark:text-white"
+            >
+              {devContent.data.subtitle}
+            </Text>
+          </div>
+          <Text
+            tag="h1"
+            variant="displayLG"
+            class="text-black dark:text-white tracking-wide text-balance font-serif italic"
+          >
+            {devContent.data.title}
+          </Text>
+          <Text
+            variant="textLG"
+            class="text-zinc-500 dark:text-zinc-400 mt-4 text-pretty max-w-2xl"
+          >
+            {devContent.data.description}
+          </Text>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-8 border-x border-dashed border-zinc-300 dark:border-zinc-700">
+          {features.map((item) => (
+            <div>
+              <Text
+                tag="h3"
+                variant="textBase"
+                class="text-black dark:text-white block font-semibold"
+              >
+                {item.title}
+              </Text>
+              <Text
+                tag="p"
+                variant="textBase"
+                class="text-zinc-500 dark:text-zinc-400 text-pretty"
+              >
+                {item.description}
+              </Text>
+            </div>
+          ))}
+        </div>
+
+        <!-- Services Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {services.map((service) => (
+            <div class="border border-dashed p-8 border-zinc-300 dark:border-zinc-700">
+              <Text
+                tag="h3"
+                variant="displayXS"
+                class="font-serif italic text-black dark:text-white"
+              >
+                {service.title}
+              </Text>
+              <Text
+                variant="textSM"
+                class="text-zinc-500 dark:text-zinc-400 mt-2"
+              >
+                {service.description}
+              </Text>
+              <ul class="mt-6 space-y-2">
+                {service.features.map((feature) => (
+                  <li class="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+                    <div class="ring-1 ring-zinc-200 dark:ring-zinc-700 p-[0.110rem] bg-white/5 shadow rounded-sm">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="icon icon-tabler icons-tabler-outline icon-tabler-check size-2.5"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 12l5 5l10 -10" />
+                      </svg>
+                    </div>
+                    <Text variant="textSM">
+                      {feature}
+                    </Text>
+                  </li>
+                ))}
+              </ul>
+              <div class="mt-6">
+                <Text
+                  tag="p"
+                  variant="textBase"
+                  class="text-black dark:text-white font-semibold"
+                >
+                  {service.price}
+                </Text>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Process Section -->
+        <div class="border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
+          <Text
+            tag="h2"
+            variant="displaySM"
+            class="font-serif italic text-black dark:text-white"
+          >
+            Development Process
+          </Text>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+            {process.map((item) => (
+              <div>
+                <Text
+                  tag="h3"
+                  variant="textBase"
+                  class="text-black dark:text-white block font-semibold"
+                >
+                  {item.step}. {item.title}
+                </Text>
+                <Text
+                  tag="p"
+                  variant="textBase"
+                  class="text-zinc-500 dark:text-zinc-400 mt-2"
+                >
+                  {item.description}
+                </Text>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  </section>
+</BaseLayout>

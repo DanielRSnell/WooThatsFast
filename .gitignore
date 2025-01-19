@@ -1,0 +1,10 @@
+node_modules
+astro
+package-lock.json
+env
+dist
+frontmatter
+wrangler
+./frontmatter
+./vscode
+.astro

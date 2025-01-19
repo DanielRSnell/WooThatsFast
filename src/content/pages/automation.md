@@ -1,0 +1,101 @@
+---
+title: "Intelligent Chat & Automation for WooCommerce"
+subtitle: "Chat & Automation Solutions"
+description: "Transform your WooCommerce store with AI-powered chat and intelligent automation workflows that boost sales and customer satisfaction."
+
+steps:
+  - day: "Step 1"
+    title: "Chat Integration"
+    description: "Set up intelligent chat solutions powered by Voiceflow for 24/7 customer support."
+  - day: "Step 2"
+    title: "Workflow Design"
+    description: "Create custom automation workflows with n8n to streamline operations."
+  - day: "Step 3"
+    title: "Integration"
+    description: "Connect systems seamlessly with WooCommerce for real-time data flow."
+  - day: "Step 4"
+    title: "Optimization"
+    description: "Fine-tune automations and chat flows based on customer interactions."
+
+features:
+  - title: "AI-Powered Chat"
+    description: "Intelligent customer support using Voiceflow's advanced conversational AI"
+  - title: "Custom Workflows"
+    description: "Automated processes tailored to your business needs with n8n"
+  - title: "WooCommerce Integration"
+    description: "Seamless connection with your store's data and operations"
+  - title: "Real-time Analytics"
+    description: "Track and optimize automation performance and chat interactions"
+
+services:
+  - title: "Chat Implementation"
+    description: "AI-powered chat solutions for your WooCommerce store"
+    features:
+      - "24/7 customer support automation"
+      - "Product recommendations"
+      - "Order status inquiries"
+      - "Custom chat flows"
+      - "Multi-language support"
+      - "Chat analytics and insights"
+    price: "Starting at $1,999"
+  
+  - title: "Workflow Automation"
+    description: "Custom n8n automation workflows for WooCommerce"
+    features:
+      - "Order processing automation"
+      - "Inventory management"
+      - "Customer notifications"
+      - "Data synchronization"
+      - "Custom API integrations"
+      - "Error handling and monitoring"
+    price: "Starting at $2,499"
+  
+  - title: "Enterprise Solution"
+    description: "Complete chat and automation implementation"
+    features:
+      - "Full chat & automation setup"
+      - "Custom integrations"
+      - "Advanced workflows"
+      - "Staff training"
+      - "Ongoing optimization"
+      - "Priority support"
+    price: "Starting at $4,999"
+
+useCases:
+  - title: "Customer Support"
+    description: "Automate responses to common customer inquiries, track orders, and provide instant support 24/7."
+  - title: "Order Management"
+    description: "Streamline order processing, updates, and fulfillment with automated workflows."
+  - title: "Inventory Control"
+    description: "Automatically track stock levels, trigger reorders, and update product availability."
+  - title: "Marketing Automation"
+    description: "Create personalized marketing campaigns based on customer behavior and purchase history."
+  - title: "Data Synchronization"
+    description: "Keep your systems in sync with automated data flows between platforms."
+  - title: "Customer Engagement"
+    description: "Engage customers with personalized recommendations and proactive support."
+
+benefits:
+  - title: "Increased Efficiency"
+    description: "Reduce manual tasks and streamline operations with intelligent automation."
+  - title: "24/7 Availability"
+    description: "Provide round-the-clock support with AI-powered chat solutions."
+  - title: "Cost Reduction"
+    description: "Lower operational costs through automated processes and support."
+  - title: "Better Customer Experience"
+    description: "Deliver faster, more consistent customer service across all channels."
+
+process:
+  - step: "1"
+    title: "Assessment"
+    description: "We analyze your current processes and identify automation opportunities."
+  - step: "2"
+    title: "Design"
+    description: "Create custom chat flows and automation workflows for your needs."
+  - step: "3"
+    title: "Implementation"
+    description: "Set up and integrate solutions with your WooCommerce store."
+  - step: "4"
+    title: "Optimization"
+    description: "Monitor, test, and optimize for maximum efficiency."
+---

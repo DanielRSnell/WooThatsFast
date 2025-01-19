@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-serif: Instrument Serif, serif;
+  --font-sans: Inter, sans-serif;
+}
+
+:root {
+  font-feature-settings: "tnum" 1, "zero" 1, "cv01" 1, "cv09" 1, "cv02" 1,
+    "cv03" 1, "cv04" 1, "ss08" 1, "dlig" 1, "cv06" 1, "cv10" 1, "cv13" 1;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: InterVariable, sans-serif;
+  }
+}
+
+/* Typing animation */
+.typing-animation .cursor {
+  display: inline-block;
+  width: 3px;
+  background-color: #777;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Promotion bar animation */
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.promotion-bar-slide {
+  animation: slideIn 0.3s ease-out;
+}
+
+[x-cloak] {
+  display: none !important;
+}

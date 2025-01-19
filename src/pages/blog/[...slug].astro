@@ -1,0 +1,189 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
+import Shadow from "@/components/global/Shadow.astro";
+import Footer from "@/components/global/Footer.astro";
+import Navigation from "@/components/global/Navigation.astro";
+import NextArticle from "@/components/blog/NextArticle.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const allPosts = await getCollection('blog');
+const relatedPosts = allPosts
+  .filter(p => p.data.category === post.data.category && p.slug !== post.slug)
+  .slice(0, 2);
+---
+
+<BaseLayout>
+  <section class="relative overflow-hidden">
+    <Shadow />
+    <div class="relative p-8 lg:px-44 lg:py-24 2xl:px-24">
+      <Navigation />
+      
+      <div class="flex flex-col gap-12 py-12 prose-xl">
+        <div class="p-8 border border-dashed border-zinc-300 dark:border-zinc-700">
+          <div class="flex items-center gap-2">
+            <Text
+              tag="a"
+              href="/blog"
+              variant="textSM"
+              class="duration-200 text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white"
+            >
+              ← Back to Blog
+            </Text>
+          </div>
+          
+          <div class="mt-8">
+            <Text
+              tag="p"
+              variant="textSM"
+              class="text-zinc-500 dark:text-zinc-400"
+              transition:name={`date-${post.slug}`}
+            >
+              {new Date(post.data.pubDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </Text>
+            <Text
+              tag="h1"
+              variant="displayLG"
+              class="mt-2 font-serif italic tracking-wide text-black dark:text-white text-balance"
+              transition:name={`title-${post.slug}`}
+            >
+              {post.data.title}
+            </Text>
+            <Text
+              variant="textLG"
+              class="max-w-2xl mt-4 text-zinc-500 dark:text-zinc-400 text-pretty"
+              transition:name={`description-${post.slug}`}
+            >
+              {post.data.description}
+            </Text>
+            <div class="flex items-center gap-4 mt-6">
+              <Text
+                tag="span"
+                variant="textSM"
+                class="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                transition:name={`category-${post.slug}`}
+              >
+                {post.data.category}
+              </Text>
+              <Text
+                tag="span"
+                variant="textSM"
+                class="text-zinc-500 dark:text-zinc-400"
+                transition:name={`author-${post.slug}`}
+              >
+                By {post.data.author}
+              </Text>
+            </div>
+          </div>
+        </div>
+
+        <article class="p-8 prose border border-dashed border-zinc-300 dark:border-zinc-700 dark:prose-invert max-w-none prose-zinc">
+          <Content />
+        </article>
+
+        {post.data.nextPost && (
+          <NextArticle
+            nextPost={post.data.nextPost}
+            nextPostTitle={post.data.nextPostTitle}
+            nextPostDescription={post.data.nextPostDescription}
+          />
+        )}
+
+        {relatedPosts.length > 0 && (
+          <div class="p-8 border border-dashed border-zinc-300 dark:border-zinc-700">
+            <Text
+              tag="h2"
+              variant="displayXS"
+              class="mb-8 font-serif italic text-black dark:text-white"
+            >
+              Related Articles
+            </Text>
+            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              {relatedPosts.map(post => (
+                <article>
+                  <Text
+                    tag="p"
+                    variant="textSM"
+                    class="text-zinc-500 dark:text-zinc-400"
+                    transition:name={`date-${post.slug}`}
+                  >
+                    {new Date(post.data.pubDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </Text>
+                  <Text
+                    tag="h3"
+                    variant="textLG"
+                    class="mt-2 font-medium text-black dark:text-white"
+                    transition:name={`title-${post.slug}`}
+                  >
+                    <a href={`/blog/${post.slug}`} class="duration-200 hover:text-zinc-600 dark:hover:text-zinc-300">
+                      {post.data.title}
+                    </a>
+                  </Text>
+                  <Text
+                    variant="textBase"
+                    class="mt-2 text-zinc-500 dark:text-zinc-400"
+                    transition:name={`description-${post.slug}`}
+                  >
+                    {post.data.description}
+                  </Text>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <Footer />
+    </div>
+  </section>
+ <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+
+    // Initialize Mermaid
+    mermaid.initialize({ startOnLoad: false });
+
+    // Render Mermaid diagrams
+    document.addEventListener("DOMContentLoaded", () => {
+        // Find all elements with data-language="mermaid"
+        const mermaidElements = document.querySelectorAll('[data-language="mermaid"]');
+        
+        mermaidElements.forEach((element) => {
+            // Extract the Mermaid code from the syntax-highlighted HTML
+            const code = Array.from(element.querySelectorAll('.line'))
+                .map(line => line.textContent.trim())
+                .join('\n');
+            
+            // Create a new container for the Mermaid diagram
+            const container = document.createElement('div');
+            container.classList.add('mermaid');
+            container.textContent = code;
+            
+            // Replace the original element with the Mermaid container
+            element.replaceWith(container);
+
+            // Render the diagram
+            mermaid.init(undefined, container);
+        });
+    });
+</script>
+
+</BaseLayout>
