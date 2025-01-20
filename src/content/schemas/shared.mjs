@@ -18,7 +18,7 @@ export const featureSchema = z.object({
 
 export const serviceSchema = z.object({
   title: z.string(),
-  description: z.string().optional(),
+  description: z.string(),
   features: z.array(z.string()),
   price: z.string().optional()
 });
@@ -66,4 +66,9 @@ export const calendarOptionsSchema = z.object({
   theme: z.object({
     brandColor: z.string()
   }).optional()
+});
+
+export const faqSchema = z.object({
+  question: z.string(),
+  answer: z.string()
 });

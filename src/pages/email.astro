@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import Text from "@/components/fundations/elements/Text.astro";
 import Shadow from "@/components/global/Shadow.astro";
 import Intro from "@/components/landing/Intro.astro";
 import Faq from "@/components/landing/Faq.astro";
@@ -8,7 +9,7 @@ import Pricing from "@/components/landing/Pricing.astro";
 import Navigation from "@/components/global/Navigation.astro";
 import { getEntry } from 'astro:content';
 
-const homeContent = await getEntry('pages', 'index');
+const emailContent = await getEntry('pages', 'email');
 ---
 
 <BaseLayout>
@@ -16,9 +17,9 @@ const homeContent = await getEntry('pages', 'index');
     <Shadow />
     <div class="p-8 lg:px-44 lg:py-24 2xl:px-24 relative">
       <Navigation />
-      <Intro content={homeContent.data} />
-      <Pricing content={homeContent.data} />
-      <Faq content={homeContent.data} />
+      <Intro content={emailContent.data} />
+      <Pricing content={emailContent.data} />
+      <Faq content={emailContent.data} />
       <Footer />
     </div>
   </section>

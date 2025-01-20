@@ -10,7 +10,8 @@ import {
   expertiseSchema,
   principleSchema,
   toolCategorySchema,
-  calendarOptionsSchema
+  calendarOptionsSchema,
+  faqSchema
 } from './shared';
 
 export const pagesSchema = z.object({
@@ -18,7 +19,6 @@ export const pagesSchema = z.object({
   subtitle: z.string(),
   description: z.string(),
   
-  // Optional arrays of different content types
   benefits: z.array(benefitSchema).optional(),
   process: z.array(processSchema).optional(),
   features: z.array(featureSchema).optional(),
@@ -28,14 +28,9 @@ export const pagesSchema = z.object({
   useCases: z.array(useCaseSchema).optional(),
   expertise: z.array(expertiseSchema).optional(),
   principles: z.array(principleSchema).optional(),
-  
-  // Tool-related schemas
+  faq: z.array(faqSchema).optional(),
   toolCategories: z.array(toolCategorySchema).optional(),
-  
-  // Quote field for about page
   quote: z.string().optional(),
-  
-  // Calendar options for scheduling
   whatToExpect: z.array(z.string()).optional(),
   calendarOptions: calendarOptionsSchema.optional()
 });
