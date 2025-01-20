@@ -12,13 +12,32 @@ const posts = await getCollection('blog', ({ data }) => {
 
 const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 const featuredPost = sortedPosts.find(post => post.data.featured);
-const categories = [...new Set(posts.map(post => post.data.category))];
+
+// Get categories and count posts in each
+const categories = [...new Set(posts.map(post => post.data.category))].sort();
+const categoryCount = categories.reduce((acc, category) => {
+  acc[category] = posts.filter(post => post.data.category === category).length;
+  return acc;
+}, {});
+
+// Group posts by category, excluding featured post
 const postsByCategory = categories.reduce((acc, category) => {
   acc[category] = sortedPosts
     .filter(post => post.data.category === category && post.slug !== featuredPost?.slug)
     .slice(0, 4);
   return acc;
 }, {});
+
+// Sort categories by priority (featured categories first) then by post count
+const categoryPriority = ['Sales', 'Performance', 'Development', 'Innovation'];
+const sortedCategories = categories.sort((a, b) => {
+  const priorityA = categoryPriority.indexOf(a);
+  const priorityB = categoryPriority.indexOf(b);
+  if (priorityA === -1 && priorityB === -1) return categoryCount[b] - categoryCount[a];
+  if (priorityA === -1) return 1;
+  if (priorityB === -1) return -1;
+  return priorityA - priorityB;
+});
 ---
 
 <BaseLayout>
@@ -28,6 +47,7 @@ const postsByCategory = categories.reduce((acc, category) => {
       <Navigation />
       
       <div class="flex flex-col gap-12 pb-12">
+        <!-- Header -->
         <div class="border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
           <div class="flex items-center gap-2 text-black dark:text-white">
             <div class="size-2 rounded-lg bg-green-500 animate-pulse"></div>
@@ -54,31 +74,74 @@ const postsByCategory = categories.reduce((acc, category) => {
           </Text>
         </div>
 
-        <div class="border-x p-8 border-dashed border-zinc-300 dark:border-zinc-700">
-          <div class="flex flex-wrap gap-4">
+        <!-- Category Navigation -->
+        <div class="border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
+          <Text
+            tag="h2"
+            variant="textLG"
+            class="text-black dark:text-white mb-6 font-medium"
+          >
+            Browse by Topic
+          </Text>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <a 
               href="/blog"
-              class={`px-4 py-2 rounded-full text-sm transition-colors duration-200 
+              class={`p-4 border border-dashed transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50
                 ${Astro.url.pathname === '/blog' 
-                  ? 'bg-black text-white dark:bg-white dark:text-black' 
-                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}
+                  ? 'border-black dark:border-white' 
+                  : 'border-zinc-300 dark:border-zinc-700'}`}
             >
-              All Posts
+              <Text
+                tag="span"
+                variant="textBase"
+                class={`block font-medium ${
+                  Astro.url.pathname === '/blog'
+                    ? 'text-black dark:text-white'
+                    : 'text-zinc-500 dark:text-zinc-400'
+                }`}
+              >
+                All Posts
+              </Text>
+              <Text
+                tag="span"
+                variant="textSM"
+                class="text-zinc-500 dark:text-zinc-400 mt-1 block"
+              >
+                {posts.length} articles
+              </Text>
             </a>
-            {categories.map(category => (
+            {sortedCategories.map(category => (
               <a 
                 href={`/blog/category/${category.toLowerCase()}`}
-                class={`px-4 py-2 rounded-full text-sm transition-colors duration-200 
+                class={`p-4 border border-dashed transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50
                   ${Astro.url.pathname === `/blog/category/${category.toLowerCase()}` 
-                    ? 'bg-black text-white dark:bg-white dark:text-black' 
-                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}
+                    ? 'border-black dark:border-white' 
+                    : 'border-zinc-300 dark:border-zinc-700'}`}
               >
-                {category}
+                <Text
+                  tag="span"
+                  variant="textBase"
+                  class={`block font-medium ${
+                    Astro.url.pathname === `/blog/category/${category.toLowerCase()}`
+                      ? 'text-black dark:text-white'
+                      : 'text-zinc-500 dark:text-zinc-400'
+                  }`}
+                >
+                  {category}
+                </Text>
+                <Text
+                  tag="span"
+                  variant="textSM"
+                  class="text-zinc-500 dark:text-zinc-400 mt-1 block"
+                >
+                  {categoryCount[category]} articles
+                </Text>
               </a>
             ))}
           </div>
         </div>
 
+        <!-- Featured Post -->
         {featuredPost && (
           <article class="relative border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
             <Text
@@ -130,17 +193,26 @@ const postsByCategory = categories.reduce((acc, category) => {
           </article>
         )}
 
-        {Object.entries(postsByCategory).map(([category, posts]) => (
+        <!-- Posts by Category -->
+        {sortedCategories.map(category => postsByCategory[category].length > 0 && (
           <div class="border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
-            <Text
-              tag="h2"
-              variant="displayXS"
-              class="font-serif italic text-black dark:text-white mb-8"
-            >
-              {category}
-            </Text>
+            <div class="flex items-center justify-between mb-8">
+              <Text
+                tag="h2"
+                variant="displayXS"
+                class="font-serif italic text-black dark:text-white"
+              >
+                {category}
+              </Text>
+              <a 
+                href={`/blog/category/${category.toLowerCase()}`}
+                class="text-sm text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors duration-200"
+              >
+                View All →
+              </a>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {posts.map(post => (
+              {postsByCategory[category].map(post => (
                 <article class="relative">
                   <Text
                     tag="p"

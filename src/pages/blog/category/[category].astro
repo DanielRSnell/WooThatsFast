@@ -30,7 +30,22 @@ const featuredPost = sortedPosts.find(post => post.data.featured);
 
 // Get all categories for navigation
 const allPosts = await getCollection('blog');
-const allCategories = [...new Set(allPosts.map(post => post.data.category))];
+const categories = [...new Set(allPosts.map(post => post.data.category))].sort();
+const categoryCount = categories.reduce((acc, category) => {
+  acc[category] = allPosts.filter(post => post.data.category === category).length;
+  return acc;
+}, {});
+
+// Sort categories by priority then count
+const categoryPriority = ['Sales', 'Performance', 'Development', 'Innovation'];
+const sortedCategories = categories.sort((a, b) => {
+  const priorityA = categoryPriority.indexOf(a);
+  const priorityB = categoryPriority.indexOf(b);
+  if (priorityA === -1 && priorityB === -1) return categoryCount[b] - categoryCount[a];
+  if (priorityA === -1) return 1;
+  if (priorityB === -1) return -1;
+  return priorityA - priorityB;
+});
 
 // Get remaining posts (excluding featured)
 const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.slug);
@@ -70,24 +85,68 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
           </Text>
         </div>
 
-        <!-- Category Filter -->
-        <div class="border-x p-8 border-dashed border-zinc-300 dark:border-zinc-700">
-          <div class="flex flex-wrap gap-4">
+        <!-- Category Navigation -->
+        <div class="border p-8 border-dashed border-zinc-300 dark:border-zinc-700">
+          <Text
+            tag="h2"
+            variant="textLG"
+            class="text-black dark:text-white mb-6 font-medium"
+          >
+            Browse by Topic
+          </Text>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <a 
               href="/blog"
-              class="px-4 py-2 rounded-full text-sm bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 transition-colors duration-200"
+              class={`p-4 border border-dashed transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50
+                ${Astro.url.pathname === '/blog' 
+                  ? 'border-black dark:border-white' 
+                  : 'border-zinc-300 dark:border-zinc-700'}`}
             >
-              All Posts
+              <Text
+                tag="span"
+                variant="textBase"
+                class={`block font-medium ${
+                  Astro.url.pathname === '/blog'
+                    ? 'text-black dark:text-white'
+                    : 'text-zinc-500 dark:text-zinc-400'
+                }`}
+              >
+                All Posts
+              </Text>
+              <Text
+                tag="span"
+                variant="textSM"
+                class="text-zinc-500 dark:text-zinc-400 mt-1 block"
+              >
+                {allPosts.length} articles
+              </Text>
             </a>
-            {allCategories.map(cat => (
+            {sortedCategories.map(cat => (
               <a 
                 href={`/blog/category/${cat.toLowerCase()}`}
-                class={`px-4 py-2 rounded-full text-sm transition-colors duration-200 
+                class={`p-4 border border-dashed transition-colors duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/50
                   ${cat === category 
-                    ? 'bg-black text-white dark:bg-white dark:text-black' 
-                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'}`}
+                    ? 'border-black dark:border-white' 
+                    : 'border-zinc-300 dark:border-zinc-700'}`}
               >
-                {cat}
+                <Text
+                  tag="span"
+                  variant="textBase"
+                  class={`block font-medium ${
+                    cat === category
+                      ? 'text-black dark:text-white'
+                      : 'text-zinc-500 dark:text-zinc-400'
+                  }`}
+                >
+                  {cat}
+                </Text>
+                <Text
+                  tag="span"
+                  variant="textSM"
+                  class="text-zinc-500 dark:text-zinc-400 mt-1 block"
+                >
+                  {categoryCount[cat]} articles
+                </Text>
               </a>
             ))}
           </div>
@@ -100,6 +159,7 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
               tag="p"
               variant="textSM"
               class="text-zinc-500 dark:text-zinc-400"
+              transition:name={`date-${featuredPost.slug}`}
             >
               {new Date(featuredPost.data.pubDate).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -112,12 +172,14 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
               tag="h2"
               variant="displaySM"
               class="font-serif italic text-black dark:text-white mt-2"
+              transition:name={`title-${featuredPost.slug}`}
             >
               {featuredPost.data.title}
             </Text>
             <Text
               variant="textBase"
               class="text-zinc-500 dark:text-zinc-400 mt-4"
+              transition:name={`description-${featuredPost.slug}`}
             >
               {featuredPost.data.description}
             </Text>
@@ -126,6 +188,7 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
                 tag="span"
                 variant="textSM"
                 class="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 rounded-full"
+                transition:name={`category-${featuredPost.slug}`}
               >
                 {featuredPost.data.category}
               </Text>
@@ -133,6 +196,7 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
                 tag="span"
                 variant="textSM"
                 class="text-zinc-500 dark:text-zinc-400"
+                transition:name={`author-${featuredPost.slug}`}
               >
                 By {featuredPost.data.author}
               </Text>
@@ -148,6 +212,7 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
                 tag="p"
                 variant="textSM"
                 class="text-zinc-500 dark:text-zinc-400"
+                transition:name={`date-${post.slug}`}
               >
                 {new Date(post.data.pubDate).toLocaleDateString('en-US', {
                   year: 'numeric',
@@ -160,12 +225,14 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
                 tag="h3"
                 variant="textLG"
                 class="font-medium text-black dark:text-white mt-2"
+                transition:name={`title-${post.slug}`}
               >
                 {post.data.title}
               </Text>
               <Text
                 variant="textBase"
                 class="text-zinc-500 dark:text-zinc-400 mt-2"
+                transition:name={`description-${post.slug}`}
               >
                 {post.data.description}
               </Text>
@@ -173,6 +240,7 @@ const remainingPosts = sortedPosts.filter(post => post.slug !== featuredPost?.sl
                 tag="span"
                 variant="textSM"
                 class="block text-zinc-500 dark:text-zinc-400 mt-4"
+                transition:name={`author-${post.slug}`}
               >
                 By {post.data.author}
               </Text>
